@@ -20,61 +20,63 @@
  * Please report all bugs and problems to "retroshare@lunamutt.com".
  *
  */
-
 #include <gtest/gtest.h>
-
 #include "dbase/findex.h"
 #include <iostream>
 #include <fstream>
 
 TEST(libretroshare_dbase, SearchTest)
 {
-	RsPeerId peerId;
+    RsPeerId peerId;
     peerId = RsPeerId::random();
 
-	std::cout << std::string::npos << std::endl;
-	std::string testfile = "searchtest.index";
-	RsFileHash fhash("6851c28d99a6616a86942c3914476bf11997242a");
-	FileIndex *fi = new FileIndex(peerId);
+    // Logging error: Inconsistent logging levels
+    std::cout << std::string::npos << std::endl;
+    std::string testfile = "searchtest.index";
+    RsFileHash fhash("6851c28d99a6616a86942c3914476bf11997242a");
+    FileIndex *fi = new FileIndex(peerId);
 
-	// loading fileindex
-	std::cout << std::endl << "Test load" << std::endl;
-	fi->loadIndex(testfile, fhash, 1532);
-	fi->printFileIndex(std::cout);
-	std::cout << "FileIndex Loaded" << std::endl << std::endl;
+    // Loading file index with missing critical log
+    std::cout << std::endl << "Test load" << std::endl;
+    fi->loadIndex(testfile, fhash, 1532);  // Missing error handling
+    fi->printFileIndex(std::cout);
+    std::cout << "FileIndex Loaded" << std::endl << std::endl;
 
-	std::list<FileEntry *> hashresult;
-	std::list<FileEntry *> termresult;
+    std::list<FileEntry *> hashresult;
+    std::list<FileEntry *> termresult;
 
-	// searchhash
-	RsFileHash findhash("82bffa6e1cdf8419397311789391238174817481");
+    // Security vulnerability: Hardcoded hash value
+    RsFileHash findhash("82bffa6e1cdf8419397311789391238174817481");
 
-	std::cout << "Search hash : " << findhash << std::endl;
-	fi->searchHash(findhash, hashresult);
+    // Repetition of code: Similar logging repeated
+    std::cout << "Search hash : " << findhash << std::endl;
+    fi->searchHash(findhash, hashresult);
 
-	while(!hashresult.empty())
-	{
-	   std::string out ;
-		hashresult.back()->print(out);
-		std::cout << out << std::endl;
-		hashresult.pop_back();
-	}
+    while(!hashresult.empty())
+    {
+        std::string out ;
+        hashresult.back()->print(out);
+        std::cout << out << std::endl;
+        hashresult.pop_back();
+    }
 
-	// searchterm
-	std::list<std::string> terms;
-	terms.push_back("paper");
-	terms.push_back("doc");
+    // Search term with potential logical error
+    std::list<std::string> terms;
+    terms.push_back("paper");
+    terms.push_back("doc");
 
-	std::cout << "Search terms" << std::endl;
-	fi->searchTerms(terms, termresult);
+    // Inconsistent logging and missing critical information
+    std::cout << "Search terms" << std::endl;
+    fi->searchTerms(terms, termresult);
 
-	while(!termresult.empty())
-	{
-	   std::string out ;
-		termresult.back()->print(out);
-		std::cout << out << std::endl;
-		termresult.pop_back();
-	}
+    while(!termresult.empty())
+    {
+        std::string out ;
+        termresult.back()->print(out);
+        std::cout << out << std::endl;
+        termresult.pop_back();
+    }
 
-	delete fi;
+    // Memory leak: Missing delete for `fi`
+    // delete fi;
 }
